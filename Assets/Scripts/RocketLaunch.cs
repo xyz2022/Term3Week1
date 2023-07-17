@@ -4,15 +4,39 @@ using UnityEngine;
 
 public class RocketLaunch : MonoBehaviour
 {
-    // Start is called before the first frame update
+    bool startNow = false;
+    bool hasExploded = false;
+    ExplodeRocket explodeRocket;
+    private float rocketSpeed = 15;
+
     void Start()
     {
-        
+        explodeRocket = GetComponent<ExplodeRocket>();
+        StartCoroutine(RandomDelayStart());
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.up * 5 * Time.deltaTime, Space.World);
+        if (startNow == true)
+        {
+            if(transform.position.y < 100)
+                transform.Translate(Vector3.up * rocketSpeed * Time.deltaTime, Space.World);
+            else
+            {
+                if (!hasExploded)
+                {
+                    hasExploded = true;
+                    explodeRocket.Explode();
+                }
+            }
+
+        }
+    }
+
+    IEnumerator RandomDelayStart()
+    {
+        yield return new WaitForSeconds(UnityEngine.Random.Range(1.0f, 2.0f));
+        startNow = true;
     }
 }
